@@ -76,4 +76,48 @@ public class FluxBufferingTests {
 			}).verifyComplete();
 	}
 
+	
+	@Test
+	public void all() {
+		Flux<String> animalFlux = Flux.just(
+				"aardvark", "elephant", "koala", "eagle", "kangaroo");
+
+		Mono<Boolean> hasAMono = animalFlux.all(a -> a.contains("a"));
+		
+		hasAMono.subscribe(System.out::println);
+		
+		StepVerifier.create(hasAMono)
+			.expectNext(true)
+			.verifyComplete();
+
+		Mono<Boolean> hasKMono = animalFlux.all(a -> a.contains("k"));
+		
+		hasKMono.subscribe(System.out::println);
+		
+		StepVerifier.create(hasKMono)
+			.expectNext(false)
+			.verifyComplete();
+	}
+	
+	@Test
+	public void any() {
+		Flux<String> animalFlux = Flux.just(
+				"aardvark", "elephant", "koala", "eagle", "kangaroo");
+
+		Mono<Boolean> hasAMono = animalFlux.any(a -> a.contains("a"));
+		
+		hasAMono.subscribe(System.out::println);
+
+		StepVerifier.create(hasAMono)
+			.expectNext(true)
+			.verifyComplete();
+
+		Mono<Boolean> hasZMono = animalFlux.any(a -> a.contains("z"));
+		
+		hasZMono.subscribe(System.out::println);
+		
+		StepVerifier.create(hasZMono)
+			.expectNext(false)
+			.verifyComplete();
+	}
 }
